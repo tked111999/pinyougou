@@ -36,7 +36,8 @@
             //重新加载列表 数据
             $scope.reloadList = function () {
                 //切换页码
-                $scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+                /*$scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);*/
+                $scope.search($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
             };
             //分页控件配置
             $scope.paginationConf = {
@@ -57,6 +58,19 @@
                     }
                 );
             };
+
+            //定义搜索对象
+            $scope.searchEntity = {};
+            //条件查询
+            $scope.search = function (page, rows) {
+                $http.post('../brand/search.do?page=' + page + "&rows=" + rows, $scope.searchEntity).success(
+                    function (response) {
+                        $scope.paginationConf.totalItems = response.total;//总记录数
+                        $scope.list = response.rows;//给列表变量赋值
+                    }
+                );
+            };
+
             //保存
             $scope.save = function () {
                 var methodName = 'add';//方法名称
