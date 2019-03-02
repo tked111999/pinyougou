@@ -7,17 +7,23 @@ import entity.PageResult;
 
 /**
  * 品牌接口
- * @author Administrator
  *
+ * @author Administrator
  */
 public interface BrandService {
 
-	public List<TbBrand> findAll();
+    public List<TbBrand> findAll();
 
-	/**
-	 * 返回分页列表
-	 * @return
-	 */
-	public PageResult findPage(int pageNum, int pageSize);
-	
+    /**
+     * 返回分页列表
+     *
+     * @return
+     */
+    public PageResult findPage(int pageNum, int pageSize);
+
+    /**
+     * 增加
+     */
+    public void add(TbBrand brand);
+
 }
