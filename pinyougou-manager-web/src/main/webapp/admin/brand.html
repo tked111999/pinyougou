@@ -59,7 +59,11 @@
             };
             //保存
             $scope.save = function () {
-                $http.post('../brand/add.do', $scope.entity).success(
+                var methodName = 'add';//方法名称
+                if ($scope.entity.id != null) {//如果有ID
+                    methodName = 'update';//则执行修改方法
+                }
+                $http.post('../brand/' + methodName + '.do', $scope.entity).success(
                     function (response) {
                         if (response.success) {
                             //重新查询
@@ -69,7 +73,15 @@
                         }
                     }
                 );
-            }
+            };
+            //查询实体
+            $scope.findOne = function (id) {
+                $http.get('../brand/findOne.do?id=' + id).success(
+                    function (response) {
+                        $scope.entity = response;
+                    }
+                );
+            };
 
         });
     </script>
@@ -128,7 +140,8 @@
                 <td>{{entity.name}}</td>
                 <td>{{entity.firstChar}}</td>
                 <td class="text-center">
-                    <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改
+                    <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal"
+                            ng-click="findOne(entity.id)">修改
                     </button>
                 </td>
             </tr>
