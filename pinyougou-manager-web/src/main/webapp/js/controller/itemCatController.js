@@ -3,6 +3,8 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
 
     $controller('baseController', {$scope: $scope});//继承
 
+    $scope.parentId = 0;//上级ID
+
     //读取列表数据绑定到表单中  
     $scope.findAll = function () {
         itemCatService.findAll().success(
@@ -37,13 +39,15 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
         if ($scope.entity.id != null) {//如果有ID
             serviceObject = itemCatService.update($scope.entity); //修改
         } else {
+            $scope.entity.parentId = $scope.parentId;//赋予上级ID
             serviceObject = itemCatService.add($scope.entity);//增加
         }
         serviceObject.success(
             function (response) {
                 if (response.success) {
                     //重新查询
-                    $scope.reloadList();//重新加载
+                    $scope.findByParentId($scope.parentId);//重新加载
+                    // $scope.reloadList();//重新加载
                 } else {
                     alert(response.message);
                 }
@@ -58,7 +62,21 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
         itemCatService.dele($scope.selectIds).success(
             function (response) {
                 if (response.success) {
-                    $scope.reloadList();//刷新列表
+                    $scope.findByParentId($scope.parentId);//重新加载
+                    // $scope.reloadList();//刷新列表
+                }
+            }
+        );
+    }
+
+    //删除一个
+    $scope.deleOne = function (id) {
+        //获取选中的复选框
+        itemCatService.dele(id).success(
+            function (response) {
+                if (response.success) {
+                    $scope.findByParentId($scope.parentId);//重新加载
+                    // $scope.reloadList();//刷新列表
                 }
             }
         );
@@ -78,6 +96,7 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
 
     //根据上级ID显示下级列表
     $scope.findByParentId = function (parentId) {
+        $scope.parentId = parentId;//记住上级ID
         itemCatService.findByParentId(parentId).success(
             function (response) {
                 $scope.list = response;
